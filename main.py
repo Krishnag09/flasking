@@ -23,6 +23,12 @@ class Posts(Resource):
         # this defines the structure of the resource.
         self.reqparse = reqparse.RequestParser() 
         self.reqparse.add_argument('action_id', type=int, help= "Action id is missing")
+        self.reqparse.add_argument('action_title', type=str, help = "action desc missing")
+        self.reqparse.add_argument('action_description', type=str, help="action image is missing")
+        self.reqparse.add_argument('action_impact', type=str, help="action impact is missing")
+        self.reqparse.add_argument('action_image', type=str, help= "action title is missing")
+        self.reqparse.add_argument('category', type=str, help= "forgot the category?")
+
     def get(self, action_id= None): 
         #  defines how the get statement works with the particular resource.
         if not action_id:
@@ -40,15 +46,6 @@ class Posts(Resource):
             action ={}
             action[int(action_id)] = actions[int(action_id)]
             return jsonify(action)
-class NewPosts(Resource):
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-
-        self.reqparse.add_argument('title', type=str, help = "action desc missing")
-        self.reqparse.add_argument('description', type=str, help="action image is missing")
-        self.reqparse.add_argument('impact', type=str, help="action impact is missing")
-        self.reqparse.add_argument('image', type=str, help= "action title is missing")
-        self.reqparse.add_argument('category', type=str, help= "forgot the category?")
 
     def post(self):
         args= self.reqparse.parse_args()
@@ -64,30 +61,8 @@ class NewPosts(Resource):
         actions[id] = action_info
         return id
 
-class DeletePost(Resource):
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('delete_action_id', type=str, help="delete id not provided")
-    def delete(self):
-        args = self.reqparse.parse_args()
-        print (args)
-        delete_action_id= int(args['delete_action_id'])
-        print (delete_action_id)
-        if(delete_action_id in actions):
-            actions.pop(int(args['delete_action_id']))
-            return(delete_action_id,"was Popped")
-        else:
-            return("delete id is not present")
-
-class UpdatePost(Resource):
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
-        self.parser.add_argument('action_id', type= str, help = "Need the ID to locate")
-        self.parser.add_argument('action_title', type =str, help = "Missing new title")
-        self.parser.add_argument('action_description', type=str, help= "Missing the new description")
-
     def put(self):
-        args = self.parser.parse_args()
+        args = self.reqparse.parse_args()
         action_id= int(args['action_id'])
         new_title = args['action_title']
         new_desc = args['action_description']
@@ -99,17 +74,20 @@ class UpdatePost(Resource):
         # can you make it better
         return actions[action_id]
 
+    def delete(self):
+        args = self.reqparse.parse_args()
+        print (args)
+        delete_action_id= int(args['delete_action_id'])
+        print (delete_action_id)
+        if(delete_action_id in actions):
+            actions.pop(int(args['delete_action_id']))
+            return(delete_action_id,"was Popped")
+        else:
+            return("delete id is not present")
 
-api.add_resource(NewPosts, '/api/newpost')
 api.add_resource(Posts,'/api/posts', '/api/posts/<action_id>')
-api.add_resource(DeletePost,'/api/deletepost/')
-api.add_resource(UpdatePost,'/api/updatepost')
 
 if __name__ == '__main__':
     app.run(debug=True)
 
-# GET ALL POSTS http://127.0.0.1:5000/api/posts
-# GET POST BY ID http://127.0.0.1:5000/api/posts/action_id
-# GET MULTIPLE POSTS http://127.0.0.1:5000/api/posts/action_id1,action_id12
-# ADD NEW POSTS http://127.0.0.1:5000/api/newpost
-# DELETE  POSTS BY ID http://127.0.0.1:5000/api/deletepost
+# GET ALL POSTS methods http://127.0.0.1:5000/api/posts + method + args
