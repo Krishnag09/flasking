@@ -31,8 +31,10 @@ class Posts(Resource):
             actionids = action_id.split(",")
             action = {}
             for id in actionids:
-                print(id)
-                action[int(id)]=actions[int(id)]
+                if id not in actions:
+                    return(id, "not found")
+                else:
+                    action[int(id)]=actions[int(id)]
             return jsonify(action)
         else:
             action ={}
@@ -62,8 +64,46 @@ class NewPosts(Resource):
         actions[id] = action_info
         return id
 
+class DeletePost(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('delete_action_id', type=str, help="delete id not provided")
+    def delete(self):
+        args = self.reqparse.parse_args()
+        print (args)
+        delete_action_id= int(args['delete_action_id'])
+        print (delete_action_id)
+        if(delete_action_id in actions):
+            actions.pop(int(args['delete_action_id']))
+            return(delete_action_id,"was Popped")
+        else:
+            return("delete id is not present")
+
+class UpdatePost(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('action_id', type= str, help = "Need the ID to locate")
+        self.parser.add_argument('action_title', type =str, help = "Missing new title")
+        self.parser.add_argument('action_description', type=str, help= "Missing the new description")
+
+    def put(self):
+        args = self.parser.parse_args()
+        action_id= int(args['action_id'])
+        new_title = args['action_title']
+        new_desc = args['action_description']
+        
+        if new_title:
+            actions[action_id]['action_title']=new_title
+        if new_desc:
+            actions[action_id]['action_description']=new_desc
+        # can you make it better
+        return actions[action_id]
+
+
 api.add_resource(NewPosts, '/api/newpost')
 api.add_resource(Posts,'/api/posts', '/api/posts/<action_id>')
+api.add_resource(DeletePost,'/api/deletepost/')
+api.add_resource(UpdatePost,'/api/updatepost')
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -71,3 +111,5 @@ if __name__ == '__main__':
 # GET ALL POSTS http://127.0.0.1:5000/api/posts
 # GET POST BY ID http://127.0.0.1:5000/api/posts/action_id
 # GET MULTIPLE POSTS http://127.0.0.1:5000/api/posts/action_id1,action_id12
+# ADD NEW POSTS http://127.0.0.1:5000/api/newpost
+# DELETE  POSTS BY ID http://127.0.0.1:5000/api/deletepost
