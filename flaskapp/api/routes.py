@@ -8,7 +8,9 @@ back = Blueprint('api', __name__)
 
 api = Api(back)
 from flaskapp.api.resources.Posts import Posts
+from flaskapp.api.resources.Users import Users
 
+api.add_resource(Users, '/api/users')
 api.add_resource(Posts,'/api/posts', '/api/posts/<action_id>')
 
 

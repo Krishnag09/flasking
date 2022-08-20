@@ -17,3 +17,13 @@ class Content(db.Model):
     def __repr__(self):
         return '<Post %s>' % self.action_id
 
+class User(db.Model):
+    user_id = db.Column(db.Integer(), primary_key=True)
+    username = db.Column(db.Text(100))
+    password = db.Column(db.Text(100))
+    avatar = db.Column(db.Text(150))
+
+
+    def __repr__(self):
+        return '<User %s>' % self.user_id
+
