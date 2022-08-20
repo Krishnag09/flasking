@@ -16,7 +16,9 @@ class Posts(Resource):
         self.reqparse.add_argument('action_impact', type=str, help="action impact is missing")
         self.reqparse.add_argument('action_image', type=str, help= "action title is missing")
         self.reqparse.add_argument('category', type=str, help= "forgot the category?")
-           
+        self.reqparse.add_argument('delete_action_id', type= str, help ="we need the id for delete item")
+
+
     def get(self, action_id=None): 
         actions = json.loads(json.dumps(Content.query.all(), cls=AlchemyEncoder))
         actions = {action["action_id"]: action for action in actions}
@@ -27,12 +29,12 @@ class Posts(Resource):
             actionids = action_id.split(",")
             action ={}
             for id in actionids:
-                print(id)
                 action[int(id)] = json.loads(json.dumps(Content.query.filter_by(action_id=int(id)).all(), cls=AlchemyEncoder))
             return action
         else:
-            action ={}
-            action[int(id)] = json.loads(json.dumps(Content.query.filter_by(action_id=int(id)).all(), cls=AlchemyEncoder))
+            action={}
+            print("here")
+            action[int(action_id)] = json.loads(json.dumps(Content.query.filter_by(action_id=action_id).first(), cls=AlchemyEncoder))
             return action
 
     def post(self):
@@ -53,13 +55,13 @@ class Posts(Resource):
         db.session.commit()
         return id
 
-
     def put(self):
+        actions = json.loads(json.dumps(Content.query.all(), cls=AlchemyEncoder))
+        actions = {action["action_id"]: action for action in actions}
         args = self.reqparse.parse_args()
         action_id= int(args['action_id'])
         new_title = args['action_title']
-        new_desc = args['action_description']
-        
+        new_desc = args['action_description']        
         if new_title:
             actions[action_id]['action_title']=new_title
         if new_desc:
@@ -68,12 +70,11 @@ class Posts(Resource):
         return actions[action_id]
 
     def delete(self):
+        actions = json.loads(json.dumps(Content.query.all(), cls=AlchemyEncoder))
+        actions = {action["action_id"]: action for action in actions}
         args = self.reqparse.parse_args()
-        print (args)
         delete_action_id= int(args['delete_action_id'])
-        print (delete_action_id)
-        if(delete_action_id in actions):
-            actions.pop(int(args['delete_action_id']))
-            return(delete_action_id,"was Popped")
-        else:
-            return("delete id is not present")
+        Content.query.filter_by(action_id=delete_action_id).delete()
+        db.session.commit()
+        return(delete_action_id)
+
