@@ -33,7 +33,6 @@ class Posts(Resource):
             return action
         else:
             action={}
-            print("here")
             action[int(action_id)] = json.loads(json.dumps(Content.query.filter_by(action_id=action_id).first(), cls=AlchemyEncoder))
             return action
 
@@ -70,8 +69,6 @@ class Posts(Resource):
         return actions[action_id]
 
     def delete(self):
-        actions = json.loads(json.dumps(Content.query.all(), cls=AlchemyEncoder))
-        actions = {action["action_id"]: action for action in actions}
         args = self.reqparse.parse_args()
         delete_action_id= int(args['delete_action_id'])
         Content.query.filter_by(action_id=delete_action_id).delete()

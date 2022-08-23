@@ -2,9 +2,11 @@ from flask import Flask
 from flaskapp.config import Config
 from flask_restful import Api
 from flaskapp.api.tables import db
+from flask_bcrypt import Bcrypt 
 
 #created the instances
 api = Api()
+bcrypt = Bcrypt()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
