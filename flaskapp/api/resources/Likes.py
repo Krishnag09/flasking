@@ -24,15 +24,14 @@ class Likes(Resource):
         likes = args['likes']
         post = Content.query.filter_by(action_id=int(action_id)).first()
         user =  User.query.filter_by(user_id = int(user_id)).first()
-
         if action_id and user_id:
-
             print(post)
             if likes:
-                post.rating +=1
+                post.rating+=1
             else:
-                post.rating -=1
+                post.rating-=1
         db.session.commit()
+        
 
 
 
