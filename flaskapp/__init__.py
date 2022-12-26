@@ -1,11 +1,11 @@
 from flaskapp.api.routes import back
-from flaskapp.main.routes import main
+# from flaskapp.api.routes import main
 from flask import Flask
 from flaskapp.config import Config
 from flask_restful import Api
 from flaskapp.api.tables import Admin, db
 from flask_bcrypt import Bcrypt
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 import random
 from flask_jwt_extended import JWTManager
 
@@ -24,10 +24,10 @@ def create_app(config_class=Config):
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # init blueprints
-    from flaskapp.main.routes import main
+    # from flaskapp.api.routes import main
     from flaskapp.api.routes import back
 
-    app.register_blueprint(main)  # linking blueprint main in the main/routes
+    # app.register_blueprint(main)  # linking blueprint main in the main/routes
     app.register_blueprint(back)  # linking blueprint api in api/routes
 
     # with app.app_context():

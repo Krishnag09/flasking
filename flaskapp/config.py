@@ -1,6 +1,6 @@
 from distutils.command.config import config
 import json
-with open('flaskapp/config.json') as config_file:
+with open('/Users/krishnagaurav/flaskBackend/flaskapp/config.json') as config_file:
     config = json.load(config_file)
 
 

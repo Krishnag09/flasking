@@ -7,9 +7,9 @@ from flask_restful import Api
 
 
 back = Blueprint('api', __name__)
-
-
 api = Api(back)
+
+# class to execute when the route is hit
 
 api.add_resource(Login, '/api/auth/login',)
 api.add_resource(Users, '/api/users', '/api/users/<user_id>')
