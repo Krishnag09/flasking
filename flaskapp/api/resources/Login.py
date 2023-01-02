@@ -2,10 +2,9 @@ from flask import Flask, jsonify
 from flask_restful import Resource, Api, reqparse, abort
 from flaskapp.api.tables import db, Admin
 from flaskapp.api.alchemy_encoder import AlchemyEncoder
-from datetime import timedelta
+from datetime import datetime, timedelta
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_bcrypt import check_password_hash
-
 class Login(Resource):
 
     def __init__(self):

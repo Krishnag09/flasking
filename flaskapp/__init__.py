@@ -1,4 +1,3 @@
-from flaskapp.api.routes import back
 # from flaskapp.api.routes import main
 from flask import Flask
 from flaskapp.config import Config

@@ -5,9 +5,9 @@ import pandas as pd
 import random
 import json
 from flaskapp.api.tables import db, User
+from flaskapp import bcrypt, jwt
 from flaskapp.api.alchemy_encoder import AlchemyEncoder
 from flask_bcrypt import generate_password_hash
-
 from flask_jwt_extended import jwt_required
 
 
@@ -24,7 +24,6 @@ class Users(Resource):
         self.reqparse.add_argument(
             'avatar', type=str, help="avatar is missing")
 
-    @jwt_required()
     def post(self):
         args = self.reqparse.parse_args()
         random_id = random.randint(10000, 100000)
@@ -39,7 +38,6 @@ class Users(Resource):
         db.session.commit()
         return random_id
 
-    @jwt_required()
     def get(self, user_id=None):
         user = {}
         if user_id:
@@ -49,7 +47,6 @@ class Users(Resource):
         else:
             return ("User not found")
 
-    @jwt_required()
     def put(self):
         args = self.reqparse.parse_args()
         user = {}
@@ -63,7 +60,6 @@ class Users(Resource):
             abort(404, message="Password is incorrect")
         db.session.commit()
 
-    @jwt_required()
     def delete(self):
         args = self.reqparse.parse_args()
         delete_user_id = int(args['user_id'])
